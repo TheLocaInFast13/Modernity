@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MODERNITY - Services Discord Bot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            padding: 0.8rem 2rem;
+            z-index: 100;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+            margin: 0;
+        }
+
+        .navbar li {
+            position: relative;
+        }
+
+        .navbar a {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .navbar a:hover {
+            background: rgba(102, 126, 234, 0.3);
+            color: #667eea;
+        }
+
+        .navbar a.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Header */
+        header {
+            position: relative;
+            padding: 6rem 0 2rem 0;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a0a0a0;
+            font-weight: 300;
+        }
+
+        /* Main Content */
+        main {
+            padding: 4rem 0;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .service-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .service-card:hover::before {
+            left: 100%;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(102, 126, 234, 0.5);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+        }
+
+        .service-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        .service-price {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 2rem;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .feature-item {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .feature-item:last-child {
+            border-bottom: none;
+        }
+
+        .feature-item::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .feature-item.unavailable {
+            color: #666;
+            text-decoration: line-through;
+        }
+
+        .feature-item.unavailable::before {
+            content: '✗';
+            color: #ff6b6b;
+        }
+
+        .select-btn {
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .select-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            margin: 10% auto;
+            padding: 3rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            position: relative;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close:hover {
+            color: #667eea;
+        }
+
+        .modal-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        .modal-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: #a0a0a0;
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .services-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .logo {
+                font-size: 2.5rem;
+            }
+            
+            .service-card {
+                padding: 2rem;
+            }
+            
+            .modal-content {
+                margin: 20% auto;
+                padding: 2rem;
+            }
+        }
+
+        /* Background Animation */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, #667eea 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+            top: 20%;
+            left: 10%;
+        }
+
+        .bg-animation::after {
+            content: '';
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, #764ba2 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite reverse;
+            bottom: 20%;
+            right: 10%;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) translateX(0px); }
+            33% { transform: translateY(-20px) translateX(10px); }
+            66% { transform: translateY(10px) translateX(-10px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+    
+    <nav class="navbar fade-in">
+        <ul>
+            <li><a href="#" class="active" onclick="handleNavClick('plans', event)">Plans</a></li>
+            <li><a href="#" onclick="handleNavClick('accueil', event)">Accueil</a></li>
+            <li><a href="#" onclick="handleNavClick('compte', event)">Compte</a></li>
+        </ul>
+    </nav>
+
+    <header class="fade-in">
+        <div class="container">
+            <h1 class="logo">MODERNITY</h1>
+            <p class="subtitle">Services Discord Bot Premium</p>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="services-grid">
+                <!-- Service Gratuit -->
+                <div class="service-card fade-in" onclick="openModal('free')">
+                    <h2 class="service-title">Service Gratuit</h2>
+                    <div class="service-price">GRATUIT</div>
+                    <ul class="feature-list">
+                        <li class="feature-item">100% Gratuit (sur ticket)</li>
+                        <li class="feature-item">100% Personnalisé</li>
+                        <li class="feature-item">Sans limite (sans illégale)</li>
+                        <li class="feature-item">Délais d'une semaine selon la demande</li>
+                        <li class="feature-item unavailable">Hébergement VPS inclus</li>
+                    </ul>
+                    <button class="select-btn">Choisir ce plan</button>
+                </div>
+
+                <!-- Service VPS -->
+                <div class="service-card fade-in" onclick="openModal('vps')">
+                    <h2 class="service-title">Service VPS</h2>
+                    <div class="service-price">Non Disponible</div>
+                    <ul class="feature-list">
+                        <li class="feature-item">100% Personnalisé</li>
+                        <li class="feature-item">Sans limite (sans illégale)</li>
+                        <li class="feature-item">Délais d'une semaine selon la demande</li>
+                        <li class="feature-item">Hébergement VPS inclus</li>
+                        <li class="feature-item">Bot connecté 24h/24</li>
+                    </ul>
+                    <button class="select-btn">Choisir ce plan</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Générique -->
+    <div id="serviceModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 class="modal-title" id="modalTitle">Site en Développement</h2>
+            <p class="modal-text" id="modalText">
+                Notre plateforme est actuellement en cours de développement. 
+                <br><br>
+                Nous travaillons dur pour vous offrir la meilleure expérience possible. 
+                <br><br>
+                Revenez bientôt pour découvrir nos services Discord Bot personnalisés !
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function openModal(serviceType) {
+            document.getElementById('serviceModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function handleNavClick(page, event) {
+            event.preventDefault();
+            
+            // Enlever la classe active de tous les liens
+            document.querySelectorAll('.navbar a').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            if (page === 'plans') {
+                // Ajouter la classe active au lien Plans
+                event.target.classList.add('active');
+                
+                // Afficher le message "vous êtes déjà sur cette page"
+                document.getElementById('modalTitle').textContent = 'Plans';
+                document.getElementById('modalText').innerHTML = 
+                    'Vous êtes déjà sur cette page !<br><br>Découvrez nos offres ci-dessous.';
+                document.getElementById('serviceModal').style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            } else {
+                // Pour Accueil et Compte, afficher le message de développement
+                document.getElementById('modalTitle').textContent = 'Site en Développement';
+                document.getElementById('modalText').innerHTML = 
+                    'Cette section est actuellement en cours de développement.<br><br>Nous travaillons dur pour vous offrir la meilleure expérience possible.<br><br>Revenez bientôt !';
+                document.getElementById('serviceModal').style.display = 'block';
+                document.body.style.overflow = 'hidden';
+                
+                // Remettre Plans comme actif après fermeture
+                setTimeout(() => {
+                    document.querySelector('.navbar a[onclick*="plans"]').classList.add('active');
+                }, 300);
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('serviceModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+            
+            // S'assurer que Plans reste sélectionné après fermeture
+            document.querySelectorAll('.navbar a').forEach(link => {
+                link.classList.remove('active');
+            });
+            document.querySelector('.navbar a[onclick*="plans"]').classList.add('active');
+        }
+
+        // Fermer la modal en cliquant à l'extérieur
+        window.onclick = function(event) {
+            const modal = document.getElementById('serviceModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        // Fermer la modal avec Échap
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Animation d'apparition progressive
+        window.addEventListener('load', function() {
+            const elements = document.querySelectorAll('.fade-in');
+            elements.forEach((element, index) => {
+                setTimeout(() => {
+                    element.style.opacity = '1';
+                }, index * 200);
+            });
+        });
+    </script>
+</body>
+</html>
